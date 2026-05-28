@@ -4,52 +4,45 @@ scripts/ingest.py
 Ingest documentation into the OfflineOps AI vector store.
 
 Usage:
+  python scripts/ingest.py --file datasets/eval-set-v1.jsonl
   python scripts/ingest.py --source docs/runbooks/
-  python scripts/ingest.py --source docs/runbooks/ --glob "**/*.md"
-  python scripts/ingest.py --file docs/runbooks/disk-management.md
 """
 
-import typer
+import argparse
 from pathlib import Path
-from rich.console import Console
-
 from core.rag.pipeline import RAGPipeline
 
-app = typer.Typer()
-console = Console()
 
+def main():
+    parser = argparse.ArgumentParser(description="Ingest documents into OfflineOps AI")
+    parser.add_argument("--file", type=str, help="Single file to ingest")
+    parser.add_argument("--source", type=str, help="Directory to ingest recursively")
+    parser.add_argument("--glob", type=str, default="**/*.md")
+    parser.add_argument("--ollama-url", type=str, default="http://localhost:11434")
+    parser.add_argument("--qdrant-url", type=str, default="http://localhost:6333")
+    parser.add_argument("--collection", type=str, default="infra-docs")
+    args = parser.parse_args()
 
-@app.command()
-def run(
-    source: Path = typer.Option(None, help="Directory to ingest recursively"),
-    file: Path = typer.Option(None, help="Single file to ingest"),
-    glob: str = typer.Option("**/*.md", help="Glob pattern for directory ingestion"),
-    ollama_url: str = typer.Option("http://localhost:11434"),
-    qdrant_url: str = typer.Option("http://localhost:6333"),
-    collection: str = typer.Option("infra-docs"),
-):
-    if not source and not file:
-        console.print("[red]Error:[/red] Provide --source (directory) or --file.")
-        raise typer.Exit(1)
-
-    console.print(f"\n[bold]OfflineOps AI — Document Ingestion[/bold]")
+    if not args.file and not args.source:
+        print("Error: provide --file or --source")
+        exit(1)
 
     rag = RAGPipeline(
-        qdrant_url=qdrant_url,
-        collection=collection,
-        ollama_url=ollama_url,
+        qdrant_url=args.qdrant_url,
+        collection=args.collection,
+        ollama_url=args.ollama_url,
     )
 
-    if file:
-        console.print(f"Ingesting file: [cyan]{file}[/cyan]")
-        rag.ingest_file(file)
+    if args.file:
+        print(f"Ingesting file: {args.file}")
+        rag.ingest_file(Path(args.file))
     else:
-        console.print(f"Ingesting directory: [cyan]{source}[/cyan] (glob: {glob})")
-        rag.ingest_directory(source, glob=glob)
+        print(f"Ingesting directory: {args.source}")
+        rag.ingest_directory(Path(args.source), glob=args.glob)
 
     info = rag.collection_info()
-    console.print(f"\n[green]Done.[/green] Collection '{info['collection']}' now has {info['points_count']} vectors.")
+    print(f"Done. Collection '{info['collection']}' now has {info['points_count']} vectors.")
 
 
 if __name__ == "__main__":
-    app()
+    main()

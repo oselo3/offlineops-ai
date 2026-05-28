@@ -26,9 +26,9 @@ class ChatResponse(BaseModel):
 
 
 class OllamaClient:
-    def __init__(self, base_url: str = "http://localhost:11434"):
+    def __init__(self, base_url: str = "http://localhost:11434", timeout: float = 300.0):
         self.base_url = base_url.rstrip("/")
-        self._client = httpx.Client(timeout=120.0)
+        self._client = httpx.Client(timeout=timeout)
 
     # ------------------------------------------------------------------ #
     # Chat                                                                 #
