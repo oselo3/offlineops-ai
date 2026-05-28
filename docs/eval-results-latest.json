@@ -1,0 +1,186 @@
+{
+  "model": "llama3.1:8b",
+  "eval_set": "datasets/eval-set-v1.jsonl",
+  "summary": {
+    "total": 15,
+    "passed": 15,
+    "pass_rate": 1.0,
+    "avg_rouge_l": 0.9572,
+    "avg_keyword_coverage": 0.92,
+    "avg_latency_ms": 118423.198
+  },
+  "by_category": {
+    "storage": {
+      "total": 3,
+      "passed": 3,
+      "pass_rate": 1.0,
+      "avg_rouge_l": 0.9719
+    },
+    "network": {
+      "total": 3,
+      "passed": 3,
+      "pass_rate": 1.0,
+      "avg_rouge_l": 0.9091
+    },
+    "services": {
+      "total": 2,
+      "passed": 2,
+      "pass_rate": 1.0,
+      "avg_rouge_l": 1.0
+    },
+    "performance": {
+      "total": 3,
+      "passed": 3,
+      "pass_rate": 1.0,
+      "avg_rouge_l": 0.9489
+    },
+    "security": {
+      "total": 2,
+      "passed": 2,
+      "pass_rate": 1.0,
+      "avg_rouge_l": 1.0
+    },
+    "logging": {
+      "total": 2,
+      "passed": 2,
+      "pass_rate": 1.0,
+      "avg_rouge_l": 0.9342
+    }
+  },
+  "by_difficulty": {
+    "easy": {
+      "total": 6,
+      "pass_rate": 1.0
+    },
+    "hard": {
+      "total": 2,
+      "pass_rate": 1.0
+    },
+    "medium": {
+      "total": 7,
+      "pass_rate": 1.0
+    }
+  },
+  "results": [
+    {
+      "id": "disk-001",
+      "passed": true,
+      "rouge_l": 1.0,
+      "keyword_coverage": 0.8,
+      "latency_ms": 119639.76,
+      "actual_answer": "Use df -h to see disk usage per mount point, then du -sh /* to identify large directories. Sort output with du -sh /* | sort -rh | head -20 to find the biggest consumers."
+    },
+    {
+      "id": "disk-002",
+      "passed": true,
+      "rouge_l": 1.0,
+      "keyword_coverage": 1.0,
+      "latency_ms": 112116.52,
+      "actual_answer": "Deleted files held open by running processes are a common cause. Use lsof | grep deleted to find them. Also, check for large files in /proc, hidden directories, and inode exhaustion with df -i."
+    },
+    {
+      "id": "disk-003",
+      "passed": true,
+      "rouge_l": 0.9157,
+      "keyword_coverage": 0.8,
+      "latency_ms": 116611.26,
+      "actual_answer": "First confirm free space in the volume group with `vgs`. Then, extend the logical volume with `lvextend -L +10G /dev/vg0/lv0`, and finally resize the filesystem using either `resize2fs` for ext4 or `xfs_growfs` for XFS. No unmounting is required for online resizing."
+    },
+    {
+      "id": "net-001",
+      "passed": true,
+      "rouge_l": 1.0,
+      "keyword_coverage": 0.6,
+      "latency_ms": 118604.38,
+      "actual_answer": "Use ss -tlnp | grep <port> or netstat -tlnp | grep <port>. You can also use nc -zv <host> <port> to test from a remote host, or nmap -p <port> <host>."
+    },
+    {
+      "id": "net-002",
+      "passed": true,
+      "rouge_l": 0.7273,
+      "keyword_coverage": 1.0,
+      "latency_ms": 127747.76,
+      "actual_answer": "To systematically diagnose a connectivity issue, start with:\n\n1. Ping to test basic reachability.\n2. Use traceroute to identify where packets are dropped.\n3. Check local routing with ip route show.\n4. Verify DNS with dig or nslookup.\n5. Check firewall rules with iptables -L or nftables.\n\nThis is a step-by-step approach to diagnose the issue, as per the provided context."
+    },
+    {
+      "id": "net-003",
+      "passed": true,
+      "rouge_l": 1.0,
+      "keyword_coverage": 1.0,
+      "latency_ms": 114363.32,
+      "actual_answer": "Use iftop -i <interface> for interactive per-connection bandwidth, nload for a simple per-interface graph, or vnstat for historical statistics. ip -s link show gives cumulative byte counters."
+    },
+    {
+      "id": "svc-001",
+      "passed": true,
+      "rouge_l": 1.0,
+      "keyword_coverage": 1.0,
+      "latency_ms": 121972.77,
+      "actual_answer": "Run `systemctl status <service>` for recent logs and the exit code. Use `journalctl -u <service> -n 100` for detailed logs. Check `ExecStart` path and permissions. Use `systemctl cat <service>` to review the unit file."
+    },
+    {
+      "id": "svc-002",
+      "passed": true,
+      "rouge_l": 1.0,
+      "keyword_coverage": 1.0,
+      "latency_ms": 122242.01,
+      "actual_answer": "In the [Service] section of the unit file, set Restart=on-failure and RestartSec=5s. Use StartLimitIntervalSec and StartLimitBurst to cap restart attempts. Reload with systemctl daemon-reload then systemctl restart <service>."
+    },
+    {
+      "id": "perf-001",
+      "passed": true,
+      "rouge_l": 0.9877,
+      "keyword_coverage": 1.0,
+      "latency_ms": 123847.36,
+      "actual_answer": "Check the load average with `uptime` or `top`. Use `htop` to identify CPU-heavy processes. Use `iostat -x 1` to spot I/O wait. `vmstat 1` shows CPU, memory, and I/O together. `sar` provides historical data if `sysstat` is installed."
+    },
+    {
+      "id": "perf-002",
+      "passed": true,
+      "rouge_l": 0.9873,
+      "keyword_coverage": 1.0,
+      "latency_ms": 119833.31,
+      "actual_answer": "Use iotop -o to show only processes actively performing I/O. Also check iostat -x 1 for device utilisation and pidstat -d 1 shows per-process I/O statistics. High iowait in vmstat suggests the storage subsystem is the bottleneck."
+    },
+    {
+      "id": "sec-001",
+      "passed": true,
+      "rouge_l": 1.0,
+      "keyword_coverage": 1.0,
+      "latency_ms": 118140.05,
+      "actual_answer": "Use last to see login history from /var/log/wtmp. lastb shows failed login attempts from /var/log/btmp. who shows currently logged-in users. Check /var/log/auth.log or /var/log/secure for SSH authentication events."
+    },
+    {
+      "id": "sec-002",
+      "passed": true,
+      "rouge_l": 1.0,
+      "keyword_coverage": 1.0,
+      "latency_ms": 115354.3,
+      "actual_answer": "Run `find / -perm /6000 -type f 2>/dev/null` to locate SUID and SGID files. Review unexpected entries \u2014 these files run with elevated privileges. Common legitimate ones include `/usr/bin/passwd` and `/usr/bin/sudo`."
+    },
+    {
+      "id": "mem-001",
+      "passed": true,
+      "rouge_l": 0.8718,
+      "keyword_coverage": 1.0,
+      "latency_ms": 121958.86,
+      "actual_answer": "Use `free -h` for a summary of RAM and swap. Then, use `ps aux --sort=-%mem | head -20` to list top memory consumers. Alternatively, you can use `smem` for more accurate RSS figures. Additionally, check `/proc/<pid>/status` for per-process memory details."
+    },
+    {
+      "id": "log-001",
+      "passed": true,
+      "rouge_l": 1.0,
+      "keyword_coverage": 1.0,
+      "latency_ms": 114400.55,
+      "actual_answer": "Use grep -r 'ERROR\\\\|CRITICAL' /var/log/ for broad searches. journalctl -p err --since '1 hour ago' queries the systemd journal. Use zgrep for compressed logs. For large log volumes, consider installing lnav for an interactive log viewer."
+    },
+    {
+      "id": "log-002",
+      "passed": true,
+      "rouge_l": 0.8684,
+      "keyword_coverage": 0.6,
+      "latency_ms": 109515.76,
+      "actual_answer": "Log rotation is managed by logrotate. Configuration files live in /etc/logrotate.conf and /etc/logrotate.d/. Set rotate, size, compress, and dateext options. Test your config with logrotate --debug /etc/logrotate.conf."
+    }
+  ]
+}
