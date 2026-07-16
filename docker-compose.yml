@@ -28,16 +28,5 @@ services:
       - ./datasets:/app/datasets
       - ./docs:/app/docs
 
-  ui:
-    image: nginx:alpine
-    container_name: offlineops-ui
-    restart: unless-stopped
-    ports:
-      - "8080:80"
-    volumes:
-      - ./ui:/usr/share/nginx/html:ro
-    depends_on:
-      - api
-
 volumes:
   qdrant_data:
